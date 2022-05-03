@@ -24,7 +24,7 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
 
   const onProfileUpdate = (data) => {
     const token = window.sessionStorage.getItem("token");
-    fetch(`http://localhost:3000/profile/${user.id}`, {
+    fetch(`https://dry-dusk-76235.herokuapp.com/profile/${user.id}`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",

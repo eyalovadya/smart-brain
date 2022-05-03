@@ -23,7 +23,7 @@ class Signin extends React.Component {
   };
 
   onSubmitSignIn = () => {
-    fetch("http://localhost:3000/signin", {
+    fetch("https://dry-dusk-76235.herokuapp.com/signin", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -35,7 +35,7 @@ class Signin extends React.Component {
       .then((data) => {
         if (data.userId && data.token) {
           this.saveAuthTokenInSession(data.token);
-          fetch(`http://localhost:3000/profile/${data.userId}`, {
+          fetch(`https://dry-dusk-76235.herokuapp.com/profile/${data.userId}`, {
             method: "get",
             headers: {
               "Content-Type": "application/json",
