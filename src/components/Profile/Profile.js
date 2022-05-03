@@ -14,7 +14,12 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
         setFormValues({ ...formValues, name: event.target.value });
         break;
       case "user-age":
-        setFormValues({ ...formValues, age: Number(event.target.value) || 0 });
+        if (Number(event.target.value)) {
+          setFormValues({
+            ...formValues,
+            age: Number(event.target.value),
+          });
+        }
         break;
       case "user-pet":
         setFormValues({ ...formValues, pet: event.target.value });
@@ -65,11 +70,10 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
           <input
             onChange={onFormChange}
             className="pa2 ba w-100"
-            placeholder={user.name}
+            value={user.name}
             type="text"
             name="user-name"
             id="name"
-            // onChange={this.onNameChange}
           />
 
           <label className="mt2 fw6" htmlFor="user-age">
@@ -78,11 +82,10 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
           <input
             onChange={onFormChange}
             className="pa2 ba w-100"
-            placeholder={user.age}
+            value={user.age}
             type="text"
             name="user-age"
             id="age"
-            // onChange={this.onNameChange}
           />
 
           <label className="mt2 fw6" htmlFor="user-pet">
@@ -91,11 +94,10 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
           <input
             onChange={onFormChange}
             className="pa2 ba w-100"
-            placeholder={user.pet}
+            value={user.pet}
             type="text"
             name="user-pet"
             id="pet"
-            // onChange={this.onNameChange}
           />
           <div
             className="mt4"
