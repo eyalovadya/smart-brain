@@ -70,7 +70,7 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
           <input
             onChange={onFormChange}
             className="pa2 ba w-100"
-            value={user.name}
+            value={formValues.name}
             type="text"
             name="user-name"
             id="name"
@@ -82,7 +82,7 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
           <input
             onChange={onFormChange}
             className="pa2 ba w-100"
-            value={user.age}
+            value={formValues.age}
             type="text"
             name="user-age"
             id="age"
@@ -94,7 +94,7 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
           <input
             onChange={onFormChange}
             className="pa2 ba w-100"
-            value={user.pet}
+            value={formValues.pet}
             type="text"
             name="user-pet"
             id="pet"
