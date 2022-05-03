@@ -14,7 +14,7 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
         setFormValues({ ...formValues, name: event.target.value });
         break;
       case "user-age":
-        setFormValues({ ...formValues, age: event.target.value });
+        setFormValues({ ...formValues, age: Number(event.target.value) || 0 });
         break;
       case "user-pet":
         setFormValues({ ...formValues, pet: event.target.value });
