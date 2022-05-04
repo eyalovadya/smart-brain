@@ -14,12 +14,11 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
         setFormValues({ ...formValues, name: event.target.value });
         break;
       case "user-age":
-        if (Number(event.target.value)) {
-          setFormValues({
-            ...formValues,
-            age: Number(event.target.value),
-          });
-        }
+        setFormValues({
+          ...formValues,
+          age: event.target.value,
+        });
+
         break;
       case "user-pet":
         setFormValues({ ...formValues, pet: event.target.value });
@@ -29,14 +28,18 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
 
   const onProfileUpdate = (data) => {
     const token = window.sessionStorage.getItem("token");
-    fetch(`https://dry-dusk-76235.herokuapp.com/profile/${user.id}`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/profile/${user.id}`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
         Authorization: token,
       },
       body: JSON.stringify({
-        formInput: formValues,
+        formInput: {
+          name: formValues.name | undefined,
+          age: Number(formValues.age) | undefined,
+          pet: formValues.name | undefined,
+        },
       }),
     })
       .then((resp) => {
@@ -82,8 +85,8 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
           <input
             onChange={onFormChange}
             className="pa2 ba w-100"
-            value={formValues.age}
-            type="text"
+            value={formValues.age.toString()}
+            type="number"
             name="user-age"
             id="age"
           />

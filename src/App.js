@@ -51,7 +51,7 @@ class App extends Component {
   componentDidMount() {
     const token = window.sessionStorage.getItem("token");
     if (token) {
-      fetch("https://dry-dusk-76235.herokuapp.com/signin", {
+      fetch(`${process.env.REACT_APP_API_BASE_URL}/signin`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ class App extends Component {
         .then((resp) => resp.json())
         .then((data) => {
           if (data?.id) {
-            fetch(`https://dry-dusk-76235.herokuapp.com/profile/${data.id}`, {
+            fetch(`${process.env.REACT_APP_API_BASE_URL}/profile/${data.id}`, {
               method: "get",
               headers: {
                 "Content-Type": "application/json",
@@ -126,7 +126,7 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
     const token = window.sessionStorage.getItem("token");
-    fetch("https://dry-dusk-76235.herokuapp.com/imageurl", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/imageurl`, {
       method: "post",
       headers: { "Content-Type": "application/json", Authorization: token },
       body: JSON.stringify({
@@ -136,7 +136,7 @@ class App extends Component {
       .then((response) => response.json())
       .then((response) => {
         if (response) {
-          fetch("https://dry-dusk-76235.herokuapp.com/image", {
+          fetch(`${process.env.REACT_APP_API_BASE_URL}/image`, {
             method: "put",
             headers: {
               "Content-Type": "application/json",

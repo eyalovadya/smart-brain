@@ -23,7 +23,7 @@ class Signin extends React.Component {
   };
 
   onSubmitSignIn = () => {
-    fetch("https://dry-dusk-76235.herokuapp.com/signin", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/signin`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -35,13 +35,16 @@ class Signin extends React.Component {
       .then((data) => {
         if (data.userId && data.token) {
           this.saveAuthTokenInSession(data.token);
-          fetch(`https://dry-dusk-76235.herokuapp.com/profile/${data.userId}`, {
-            method: "get",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: data.token,
-            },
-          })
+          fetch(
+            `${process.env.REACT_APP_API_BASE_URL}/profile/${data.userId}`,
+            {
+              method: "get",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: data.token,
+              },
+            }
+          )
             .then((resp) => resp.json())
             .then((user) => {
               if (user && user.email) {
