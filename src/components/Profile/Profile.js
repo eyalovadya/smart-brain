@@ -27,7 +27,7 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
   };
 
   const onProfileUpdate = (data) => {
-    const token = window.sessionStorage.getItem("token");
+    const token = window.localStorage.getItem("token");
     fetch(`${process.env.REACT_APP_API_BASE_URL}/profile/${user.id}`, {
       method: "post",
       headers: {
@@ -36,9 +36,9 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
       },
       body: JSON.stringify({
         formInput: {
-          name: formValues.name | undefined,
-          age: Number(formValues.age) | undefined,
-          pet: formValues.name | undefined,
+          name: formValues.name || undefined,
+          age: Number(formValues.age) || undefined,
+          pet: formValues.pet || undefined,
         },
       }),
     })
@@ -85,7 +85,7 @@ const Profile = ({ isProfileOpen, toggleModal, user, loadUser }) => {
           <input
             onChange={onFormChange}
             className="pa2 ba w-100"
-            value={formValues.age.toString()}
+            value={formValues.age?.toString() || ""}
             type="number"
             name="user-age"
             id="age"

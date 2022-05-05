@@ -17,12 +17,18 @@ const Rank = ({ name, entries }) => {
       .catch(console.log);
   };
   return (
-    <div>
-      <div className="white f3">
-        {`${name}, your current entry count is...`}
-      </div>
-      <div className="white f1">{entries}</div>
-      <div className="white f3">Rank Badge: {emoji}</div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        marginLeft: "10px",
+        height: "100%",
+      }}
+    >
+      <div className="white f5">Hey {name}</div>
+      <div className="white f5">Entry count: {entries}</div>
+      <div className="white f5">Rank: {emoji}</div>
     </div>
   );
 };

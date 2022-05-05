@@ -15,3 +15,12 @@
   left: 0;
   z-index: -1;
 }
+
+#loading-page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

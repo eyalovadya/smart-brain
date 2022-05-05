@@ -10,6 +10,7 @@ import Rank from "./components/Rank/Rank";
 import Modal from "./components/Modal/Modal";
 import "./App.css";
 import Profile from "./components/Profile/Profile";
+import BarLoader from "react-spinners/BarLoader";
 
 const particlesOptions = {
   //customize this to your liking
@@ -31,6 +32,7 @@ const initialState = {
   route: "signin",
   isSignedIn: false,
   isProfileOpen: false,
+  isDetecting: false,
   user: {
     id: "",
     name: "",
@@ -48,38 +50,48 @@ class App extends Component {
     this.state = initialState;
   }
 
-  componentDidMount() {
-    const token = window.sessionStorage.getItem("token");
+  async componentDidMount() {
+    const token = window.localStorage.getItem("token");
+    this.onRouteChange("loading");
+
     if (token) {
-      fetch(`${process.env.REACT_APP_API_BASE_URL}/signin`, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      })
-        .then((resp) => resp.json())
-        .then((data) => {
-          if (data?.id) {
-            fetch(`${process.env.REACT_APP_API_BASE_URL}/profile/${data.id}`, {
-              method: "get",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: token,
-              },
-            })
-              .then((resp) => resp.json())
-              .then((user) => {
-                if (user && user.email) {
-                  this.loadUser(user);
-                  this.onRouteChange("home");
-                }
-              })
-              .catch(console.log);
+      try {
+        const url = `${process.env.REACT_APP_API_BASE_URL}/signin`;
+        const options = {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        };
+
+        const resp = await fetch(url, options);
+        const data = await resp.json();
+
+        if (data?.id) {
+          const profileUrl = `${process.env.REACT_APP_API_BASE_URL}/profile/${data.id}`;
+          const profileOptions = {
+            method: "get",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+          };
+
+          const profileResp = await fetch(profileUrl, profileOptions);
+          const user = await profileResp.json();
+
+          if (user?.email) {
+            this.loadUser(user);
+            return this.onRouteChange("home");
           }
-        })
-        .catch(console.log);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
+
+    this.onRouteChange("signin");
   }
 
   loadUser = (data) => {
@@ -123,38 +135,51 @@ class App extends Component {
     this.setState({ input: event.target.value });
   };
 
-  onButtonSubmit = () => {
+  setIsDetecting = (isDetecting) => {
+    this.setState({ isDetecting });
+  };
+
+  onButtonSubmit = async () => {
     this.setState({ imageUrl: this.state.input });
-    const token = window.sessionStorage.getItem("token");
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/imageurl`, {
-      method: "post",
-      headers: { "Content-Type": "application/json", Authorization: token },
-      body: JSON.stringify({
-        input: this.state.input,
-      }),
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        if (response) {
-          fetch(`${process.env.REACT_APP_API_BASE_URL}/image`, {
-            method: "put",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: token,
-            },
-            body: JSON.stringify({
-              id: this.state.user.id,
-            }),
-          })
-            .then((response) => response.json())
-            .then((count) => {
-              this.setState(Object.assign(this.state.user, { entries: count }));
-            })
-            .catch(console.log);
-        }
-        this.displayFaceBox(this.calculateFaceLocation(response));
-      })
-      .catch((err) => console.log(err));
+    const token = window.localStorage.getItem("token");
+
+    try {
+      this.displayFaceBox([]);
+      this.setIsDetecting(true);
+      const url = `${process.env.REACT_APP_API_BASE_URL}/imageurl`;
+      const options = {
+        method: "post",
+        headers: { "Content-Type": "application/json", Authorization: token },
+        body: JSON.stringify({
+          input: this.state.input,
+        }),
+      };
+      const resp = await fetch(url, options);
+      const data = await resp.json();
+
+      if (!data) return;
+
+      const imageUrl = `${process.env.REACT_APP_API_BASE_URL}/image`;
+      const imageOptions = {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          id: this.state.user.id,
+        }),
+      };
+
+      const imageResp = await fetch(imageUrl, imageOptions);
+      const count = await imageResp.json();
+
+      this.setState(Object.assign(this.state.user, { entries: count }));
+      this.displayFaceBox(this.calculateFaceLocation(data));
+    } catch (error) {
+      console.log(error);
+    }
+    this.setIsDetecting(false);
   };
 
   onRouteChange = (route) => {
@@ -174,15 +199,25 @@ class App extends Component {
   };
 
   render() {
-    const { isSignedIn, imageUrl, route, boxes, isProfileOpen, user } =
-      this.state;
+    const {
+      isSignedIn,
+      imageUrl,
+      route,
+      boxes,
+      isProfileOpen,
+      user,
+      isDetecting,
+      input,
+    } = this.state;
     return (
       <div className="App">
         <Particles className="particles" params={particlesOptions} />
         <Navigation
+          isLoadingPage={route === "loading"}
           isSignedIn={isSignedIn}
           onRouteChange={this.onRouteChange}
           toggleModal={this.toggleModal}
+          user={this.state.user}
         />
         {isProfileOpen && (
           <Modal>
@@ -196,16 +231,21 @@ class App extends Component {
         )}
         {route === "home" ? (
           <div>
-            <Logo />
-            <Rank
-              name={this.state.user.name}
-              entries={this.state.user.entries}
-            />
             <ImageLinkForm
+              input={input}
               onInputChange={this.onInputChange}
               onButtonSubmit={this.onButtonSubmit}
             />
-            <FaceRecognition boxes={boxes} imageUrl={imageUrl} />
+            <FaceRecognition
+              boxes={boxes}
+              imageUrl={imageUrl}
+              isDetecting={isDetecting}
+            />
+          </div>
+        ) : route === "loading" ? (
+          <div id="loading-page">
+            <div>Loading...</div>
+            <BarLoader color={"black"} size={70} width={150} />
           </div>
         ) : route === "signin" ? (
           <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
