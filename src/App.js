@@ -180,6 +180,7 @@ class App extends Component {
       console.log(error);
     }
     this.setIsDetecting(false);
+    window.scrollTo(0, document.body.scrollHeight);
   };
 
   onRouteChange = (route) => {

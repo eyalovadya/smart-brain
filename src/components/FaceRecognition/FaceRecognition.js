@@ -80,16 +80,23 @@ const FaceRecognition = ({ imageUrl, boxes, isDetecting }) => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "lightblue",
             color: "black",
-            padding: 20,
+            padding: 10,
+            marginTop: 10,
+            marginBottom: 10,
             width: 500,
+            maxWidth: "100%",
           }}
+          className="f6 f5-m bg-white b bg-opacity-50"
         >
-          <div>
-            Faces Detected:{" "}
-            <span className="bg-white pa1 b red">{boxes.length}</span> Try
-            clicking one of them :)
+          <div
+            style={{
+              whiteSpace: "pre-line",
+            }}
+          >
+            Faces Detected:
+            <span className="bg-white pa1 b red">{boxes.length}</span>
+            {"\n"}Try clicking one of them :)
           </div>
         </div>
       )}

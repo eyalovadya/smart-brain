@@ -38,6 +38,10 @@ const ImageLinkForm = ({ onInputChange, onButtonSubmit, input }) => {
             placeholder="Enter image URL"
           />
           <button
+            style={{
+              margin: 0,
+              padding: 0,
+            }}
             className={`w-30 f4 link ph3 pv2 dib white bg-light-silver ${
               isImageUrlValid(input) ? `grow pointer bg-light-purple` : ""
             }`}

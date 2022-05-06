@@ -54,7 +54,7 @@ const ProfileIcon = ({ onRouteChange, toggleModal }) => {
         </DropdownToggle>
         <DropdownMenu
           className="b--transparent shadow-5"
-          style={{ marginTop: 20, backgroundColor: "rgba(255,255,255,0.5)" }}
+          style={{ marginTop: 20, backgroundColor: "rgba(255,255,255,1)" }}
         >
           <DropdownItem onClick={toggleModal}>View Profile</DropdownItem>
           <DropdownItem onClick={onSignOut}>Sign Out</DropdownItem>
